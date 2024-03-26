@@ -1,0 +1,5 @@
+chardet
+chromadb
+sentence_transformers
+langchain
+tqdm
