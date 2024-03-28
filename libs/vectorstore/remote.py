@@ -2,7 +2,6 @@
 
 from chromadb import HttpClient
 from chromadb.config import Settings
-from chromadb.utils import embedding_functions as ef
 
 
 def chroma_client(host: str = "localhost",
@@ -14,7 +13,3 @@ def chroma_client(host: str = "localhost",
     chromadb_client_http = HttpClient(host=host, port=port,
                                       settings=clientSettings)
     return chromadb_client_http
-
-
-def s_transformer(model: str = "all-MiniLM-L6-v2"):
-    return ef.SentenceTransformerEmbeddingFunction(model_name=model)
