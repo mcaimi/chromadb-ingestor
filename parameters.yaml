@@ -1,0 +1,19 @@
+---
+chromadb:
+  remote: False
+  persist_dir: "./persist.local"
+  host: localhost
+  port: 8080
+  collection: "default"
+
+training_data:
+  path: "/training_data"
+  pattern: "**/*.txt"
+
+embeddings:
+  local: True
+  sentence_transformer:
+    model: "all-MiniLM-L6-v2"
+  ollama:
+    baseurl: "http://localhost:11434"
+    model: "llama2:latest"
