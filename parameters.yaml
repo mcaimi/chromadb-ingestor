@@ -16,4 +16,4 @@ embeddings:
     model: "all-MiniLM-L6-v2"
   ollama:
     baseurl: "http://localhost:11434"
-    model: "llama2:latest"
+    model: "nomic-embed-text:latest"
