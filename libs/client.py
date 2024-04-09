@@ -23,9 +23,10 @@ class ChromaClient(object):
                      training_data_path: str = ".",
                      pattern: str = "**/*.txt",
                      chunk_size: int = 1000,
-                     chunk_overlap: int = 0) -> None:
+                     chunk_overlap: int = 0,
+                     multithread: bool = False) -> None:
         self.documents: list = load_text_documents(path=training_data_path,
-                                                   pattern=pattern, multithread=True)
+                                                   pattern=pattern, multithread=multithread)
         print(f"Loaded {len(self.documents)} Documents...")
         self.tokenized_documents: list = split_text_documents(documents=self.documents,
                                                               chunk_size=chunk_size,

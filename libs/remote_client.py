@@ -28,11 +28,18 @@ class RemoteChromaClient(object):
     def Heartbeat(self) -> int:
         return self._client.heartbeat()
 
-    def GenerateEmbeddings(self, training_data_path: str = ".", pattern: str = "**/*.txt"):
+    def GenerateEmbeddings(self, training_data_path: str = ".",
+                           pattern: str = "**/*.txt",
+                           chunk_size: int = 1000, chunk_overlap: int = 0,
+                           multithread: bool = False):
         # load custom knowledge data and tokenize it
-        knowledge_body = load_text_documents(path=training_data_path, pattern=pattern)
+        knowledge_body = load_text_documents(path=training_data_path,
+                                             pattern=pattern,
+                                             multithread=multithread)
         print(f"Loaded {len(knowledge_body)} Documents...")
-        tokenized_docs = split_text_documents(documents=knowledge_body)
+        tokenized_docs = split_text_documents(documents=knowledge_body,
+                                              chunk_size=chunk_size,
+                                              chunk_overlap=chunk_overlap)
         print(f"Tokenized documents number: {len(tokenized_docs)}.")
 
         if len(tokenized_docs) > 0:

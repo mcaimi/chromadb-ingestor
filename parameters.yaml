@@ -9,6 +9,8 @@ chromadb:
 training_data:
   path: "/training_data"
   pattern: "**/*.txt"
+  chunk_size: 1000
+  chunk_overlap: 0
 
 embeddings:
   local: True
