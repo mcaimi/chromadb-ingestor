@@ -3,7 +3,7 @@
 import uuid
 from tqdm import tqdm
 from typing import Callable
-from chromadb import PersistentClient
+from chromadb import PersistentClient, Collection
 from .loaders.textdata import load_text_documents, split_text_documents
 
 
@@ -15,6 +15,9 @@ class ChromaClient(object):
             raise Exception("ChromaClient: embedding_function cannot be None, you must specify and embedding function")
         else:
             self.embedding_function: Callable = embedding_function
+
+    def Collection(self) -> Collection:
+        return self.collection
 
     def TokenizeDocs(self,
                      training_data_path: str = ".",

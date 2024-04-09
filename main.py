@@ -54,7 +54,9 @@ if __name__ == "__main__":
                                     port=int(parms.chromadb.port),
                                     collection=parms.chromadb.collection,
                                     embedding_function=embed_func)
+            ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
             cc.GenerateEmbeddings(training_data_path=parms.training_data.path, pattern=parms.training_data.pattern)
+            ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
         except Exception as e:
             ttyWriter.print_error(f"{e}")
 
@@ -66,7 +68,9 @@ if __name__ == "__main__":
         try:
             cc = ChromaClient(persistence_directory=parms.chromadb.persist_dir,
                               embedding_function=embed_func)
+            ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
             cc.TokenizeDocs(training_data_path=parms.training_data.path, pattern=parms.training_data.pattern)
             cc.GenerateEmbeddings(collection_name=parms.chromadb.collection)
+            ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
         except Exception as e:
             ttyWriter.print_error(f"{e}")
