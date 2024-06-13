@@ -2,4 +2,5 @@ chardet
 chromadb
 sentence_transformers
 langchain
+langchain_community
 tqdm
