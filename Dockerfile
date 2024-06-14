@@ -18,8 +18,6 @@ FROM docker.io/library/fedora:latest
 
 ENV appuser chromadb
 ENV appgroup chromadb
-ENV CHROMAHOST localhost
-ENV CHROMAPORT 8080
 
 USER root
 RUN dnf install -y python3-pip
@@ -37,5 +35,3 @@ USER $appuser
 WORKDIR /home/$appuser
 
 ENTRYPOINT ["./run.sh"]
-CMD ["$CHROMAHOST", "$CHROMAPORT"]
-
