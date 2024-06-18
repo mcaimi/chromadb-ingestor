@@ -1,5 +1,5 @@
 chardet
-chromadb
+chromadb==0.5.2
 sentence_transformers
 langchain
 langchain_community
