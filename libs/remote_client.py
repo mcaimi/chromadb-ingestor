@@ -4,7 +4,7 @@ import uuid
 from typing import Callable
 from tqdm import tqdm
 from chromadb import HttpClient, Collection
-from .loaders.textdata import (load_text_documents, split_text_documents)
+from .loaders.textdata import (load_text_documents, prepare_corpus, split_text_documents)
 from .vectorstore.remote import chroma_client
 
 
@@ -12,12 +12,13 @@ class RemoteChromaClient(object):
     def __init__(self, host: str = "localhost",
                  port: int = 8080,
                  collection: str = "default",
+                 collection_similarity: str = "l2",
                  embedding_function: Callable = None):
         self._client: HttpClient = chroma_client(host=host, port=port)
         if embedding_function is None:
             raise Exception("RemoteChromaClient: embedding_function cannot be None: you must specify an embedding function")
         else:
-            self._collection: Collection = self._client.get_or_create_collection(collection, embedding_function=embedding_function)
+            self._collection: Collection = self._client.get_or_create_collection(collection, metadata={"hnsw:space": collection_similarity}, embedding_function=embedding_function)
 
     def Client(self) -> HttpClient:
         return self._client
@@ -37,7 +38,12 @@ class RemoteChromaClient(object):
                                              pattern=pattern,
                                              multithread=multithread)
         print(f"Loaded {len(knowledge_body)} Documents...")
-        tokenized_docs = split_text_documents(documents=knowledge_body,
+
+        # prepare knowledge corpus
+        tokenized_data = prepare_corpus(knowledge_body)
+        print(f"Tokenized {len(tokenized_data)} Content...")
+
+        tokenized_docs = split_text_documents(documents=tokenized_data,
                                               chunk_size=chunk_size,
                                               chunk_overlap=chunk_overlap)
         print(f"Tokenized documents number: {len(tokenized_docs)}.")

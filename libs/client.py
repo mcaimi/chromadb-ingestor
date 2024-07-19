@@ -9,8 +9,12 @@ from .loaders.textdata import load_text_documents, split_text_documents
 
 class ChromaClient(object):
     def __init__(self, persistence_directory: str = ".",
+                 collection: str = "default",
+                 collection_similarity: str = "l2",
                  embedding_function: Callable = None):
         self.persistence_dir: str = persistence_directory
+        self.collection_name = collection
+        self.collection_similarity = collection_similarity
         if embedding_function is None:
             raise Exception("ChromaClient: embedding_function cannot be None, you must specify and embedding function")
         else:
@@ -33,9 +37,10 @@ class ChromaClient(object):
                                                               chunk_overlap=chunk_overlap)
         print(f"Tokenized documents number: {len(self.tokenized_documents)}.")
 
-    def GenerateEmbeddings(self, collection_name: str = "default") -> None:
+    def GenerateEmbeddings(self) -> None:
         self.chroma_client: PersistentClient = PersistentClient(path=self.persistence_dir)
-        self.collection = self.chroma_client.get_or_create_collection(collection_name,
+        self.collection = self.chroma_client.get_or_create_collection(self.collection_name,
+                                                                      metadata={"hnsw:space": self.collection_similarity},
                                                                       embedding_function=self.embedding_function)
         if len(self.tokenized_documents) > 0:
             for doc in tqdm(self.tokenized_documents, ascii=True, desc="Ingesting..."):

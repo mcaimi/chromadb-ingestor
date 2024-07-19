@@ -5,6 +5,7 @@ chromadb:
   host: localhost
   port: 8080
   collection: "default"
+  collection_similarity: "cosine"
 
 training_data:
   path: "/training_data"

@@ -53,6 +53,7 @@ if __name__ == "__main__":
             cc = RemoteChromaClient(host=parms.chromadb.host,
                                     port=int(parms.chromadb.port),
                                     collection=parms.chromadb.collection,
+                                    collection_similarity=parms.chromadb.collection_similarity,
                                     embedding_function=embed_func)
             ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
             cc.GenerateEmbeddings(training_data_path=parms.training_data.path, pattern=parms.training_data.pattern, chunk_size=parms.training_data.chunk_size, chunk_overlap=parms.training_data.chunk_overlap)
