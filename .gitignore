@@ -2,3 +2,6 @@
 *.local
 **/.DS_Store
 **/venv
+.ipynb*
+.jupyter*
+.python-version
