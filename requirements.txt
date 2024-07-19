@@ -4,3 +4,5 @@ sentence_transformers
 langchain
 langchain_community
 tqdm
+prettytable
+nltk
