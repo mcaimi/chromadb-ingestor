@@ -4,3 +4,5 @@
 **/venv
 .jupyter*
 .python-version
+query.py
+.ipynb_checkpoints
