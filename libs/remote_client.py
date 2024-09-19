@@ -3,6 +3,7 @@
 import uuid
 from typing import Callable
 from tqdm import tqdm
+from langchain_chroma import Chroma
 from chromadb import HttpClient, Collection
 from .loaders.textdata import (load_text_documents, prepare_corpus, split_text_documents)
 from .vectorstore.remote import chroma_client
@@ -18,10 +19,14 @@ class RemoteChromaClient(object):
         if embedding_function is None:
             raise Exception("RemoteChromaClient: embedding_function cannot be None: you must specify an embedding function")
         else:
-            self._collection: Collection = self._client.get_or_create_collection(collection, metadata={"hnsw:space": collection_similarity}, embedding_function=embedding_function)
+            self._collection: Collection = self._client.get_or_create_collection(collection, metadata={"hnsw:space": collection_similarity})
+            self._chroma_adapter: Chroma = Chroma(client=self._client, collection_name=collection, embedding_function=embedding_function)
 
     def Client(self) -> HttpClient:
         return self._client
+
+    def Adapter(self) -> Chroma:
+        return self._chroma_adapter
 
     def Collection(self) -> Collection:
         return self._collection
@@ -50,9 +55,7 @@ class RemoteChromaClient(object):
 
         if len(tokenized_docs) > 0:
             for doc in tqdm(tokenized_docs, ascii=True, desc="Ingesting..."):
-                self.Collection().add(ids=[str(uuid.uuid1())],
-                                      documents=doc.page_content,
-                                      metadatas=doc.metadata)
+                self.Adapter().add_documents(ids=[str(uuid.uuid1())], documents=[doc])
 
     def __str__(self) -> str:
         return f"ChromaDB Client: {self._client.database} - Collection: {self._collection}"

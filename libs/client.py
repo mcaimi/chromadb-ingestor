@@ -3,8 +3,9 @@
 import uuid
 from tqdm import tqdm
 from typing import Callable
+from langchain_chroma import Chroma
 from chromadb import PersistentClient, Collection
-from .loaders.textdata import load_text_documents, split_text_documents
+from .loaders.textdata import (load_text_documents, split_text_documents, prepare_corpus)
 
 
 class ChromaClient(object):
@@ -20,6 +21,14 @@ class ChromaClient(object):
         else:
             self.embedding_function: Callable = embedding_function
 
+        # instantiate client and adapter
+        self.chroma_client: PersistentClient = PersistentClient(path=self.persistence_dir)
+        self.collection = self.chroma_client.get_or_create_collection(self.collection_name,
+                                                                      metadata={"hnsw:space": self.collection_similarity})
+
+        self.chroma_adapter = Chroma(client=self.chroma_client, collection_name=self.collection_name, embedding_function=self.embedding_function)
+
+
     def Collection(self) -> Collection:
         return self.collection
 
@@ -32,18 +41,17 @@ class ChromaClient(object):
         self.documents: list = load_text_documents(path=training_data_path,
                                                    pattern=pattern, multithread=multithread)
         print(f"Loaded {len(self.documents)} Documents...")
-        self.tokenized_documents: list = split_text_documents(documents=self.documents,
+        knowledge_body = prepare_corpus(self.documents)
+
+        # tokenize
+        self.tokenized_documents: list = split_text_documents(documents=knowledge_body,
                                                               chunk_size=chunk_size,
                                                               chunk_overlap=chunk_overlap)
         print(f"Tokenized documents number: {len(self.tokenized_documents)}.")
+        del(knowledge_body)
 
     def GenerateEmbeddings(self) -> None:
-        self.chroma_client: PersistentClient = PersistentClient(path=self.persistence_dir)
-        self.collection = self.chroma_client.get_or_create_collection(self.collection_name,
-                                                                      metadata={"hnsw:space": self.collection_similarity},
-                                                                      embedding_function=self.embedding_function)
+        # ingest documents
         if len(self.tokenized_documents) > 0:
             for doc in tqdm(self.tokenized_documents, ascii=True, desc="Ingesting..."):
-                self.collection.add(ids=[str(uuid.uuid1())],
-                                      documents=doc.page_content,
-                                      metadatas=doc.metadata)
+                self.chroma_adapter.add_documents(ids=[str(uuid.uuid1())], documents=[doc])
