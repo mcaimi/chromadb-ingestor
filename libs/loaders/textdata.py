@@ -8,7 +8,7 @@ try:
     from prettytable import PrettyTable
     from tqdm import tqdm
     import os
-    download("punkt", download_dir=os.environ.get("NLTK_DATA", "/".join((os.environ.get("HOME"), "nltk_data"))))
+    download("punkt_tab", download_dir=os.environ.get("NLTK_DATA", "/".join((os.environ.get("HOME"), "nltk_data"))))
 except Exception as e:
     print(f"Caught Exception {e}")
 
