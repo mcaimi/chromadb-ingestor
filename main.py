@@ -71,7 +71,7 @@ if __name__ == "__main__":
                               embedding_function=embed_func)
             ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
             cc.TokenizeDocs(training_data_path=parms.training_data.path, pattern=parms.training_data.pattern, chunk_size=parms.training_data.chunk_size, chunk_overlap=parms.training_data.chunk_overlap)
-            cc.GenerateEmbeddings(collection_name=parms.chromadb.collection)
+            cc.GenerateEmbeddings()
             ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
         except Exception as e:
             ttyWriter.print_error(f"{e}")

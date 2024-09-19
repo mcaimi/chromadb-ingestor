@@ -1,7 +1,9 @@
 chardet
-chromadb==0.5.4
+chromadb==0.5.5
 sentence_transformers
 langchain
+langchain-huggingface
+langchain-chroma
 langchain_community
 tqdm
 prettytable
