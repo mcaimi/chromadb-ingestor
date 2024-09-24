@@ -4,6 +4,7 @@ sentence_transformers
 langchain
 langchain-huggingface
 langchain-chroma
+langchain-ollama
 langchain_community
 tqdm
 prettytable

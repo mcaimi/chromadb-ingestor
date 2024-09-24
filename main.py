@@ -41,8 +41,8 @@ if __name__ == "__main__":
     else:
         ttyWriter.print_warning(f"Running Ollama embedding with model {parms.embeddings.ollama.model}")
         ttyWriter.print_warning(f"Ollama API URL: {parms.embeddings.ollama.baseurl}")
-        from libs.embedding.ollama import ChromaOllamaEmbedder
-        embed_func = ChromaOllamaEmbedder(model=parms.embeddings.ollama.model)
+        from libs.embedding.ollama import ollama_instance
+        embed_func = ollama_instance(base_url=parms.embeddings.ollama.baseurl, model=parms.embeddings.ollama.model)
 
     if parms.chromadb.remote:
         ttyWriter.print_success("Chroma Ingestor: Initializing Remote Client")
