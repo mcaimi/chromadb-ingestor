@@ -3,7 +3,6 @@
 try:
     from langchain_core.documents import Document
     from langchain_community.document_loaders import DirectoryLoader, TextLoader
-    from langchain_text_splitters import RecursiveCharacterTextSplitter as rts
     from nltk import word_tokenize, sent_tokenize, download
     from prettytable import PrettyTable
     from tqdm import tqdm
@@ -33,6 +32,7 @@ def prepare_corpus(raw_loader: list) -> list:
         document_sentences = sent_tokenize(doc.page_content)
         corpus.append({"metadata": doc.metadata,
                        "raw_sentences": document_sentences,
+                       "page_content": doc.page_content,
                        "sentence_count": len(document_sentences),
                        "wordcount": len(document_tokens),
                        "vocabulary": set(document_tokens),
@@ -48,19 +48,8 @@ def prepare_corpus(raw_loader: list) -> list:
     print(data_table)
 
     # return processed data
-    tokenized_data = []
-    for doc in tqdm(corpus, ascii=True, desc="Tokenizing..."):
-        metadata = doc.get("metadata")
-        for data in doc.get("raw_sentences"):
-            tokenized_data.append(Document(metadata=metadata, page_content=data))
-    return tokenized_data
-
-
-def split_text_documents(documents: list = None,
-                         chunk_size: int = 1000,
-                         chunk_overlap: int = 0) -> list:
-    if documents is None:
-        return None
-
-    splitter = rts(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
-    return splitter.split_documents(documents)
+    prepared_data = []
+    for doc in tqdm(corpus, ascii=True, desc="Preparing..."):
+        doc_metadata = doc.get("metadata")
+        prepared_data.append(Document(metadata=doc_metadata, page_content=doc.get("page_content")))
+    return prepared_data

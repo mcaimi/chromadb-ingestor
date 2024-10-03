@@ -5,7 +5,8 @@ from typing import Callable
 from tqdm import tqdm
 from langchain_chroma import Chroma
 from chromadb import HttpClient, Collection
-from .loaders.textdata import (load_text_documents, prepare_corpus, split_text_documents)
+from .loaders.textdata import (load_text_documents, prepare_corpus)
+from .splitters.splitters import split_text_documents_nltk as splitter
 from .vectorstore.remote import chroma_client
 
 
@@ -34,9 +35,34 @@ class RemoteChromaClient(object):
     def Heartbeat(self) -> int:
         return self._client.heartbeat()
 
+#    TO BE REMOVED
+#    def GenerateEmbeddings(self, training_data_path: str = ".",
+#                           pattern: str = "**/*.txt",
+#                           chunk_size: int = 1000, chunk_overlap: int = 0,
+#                           multithread: bool = False):
+#        # load custom knowledge data and tokenize it
+#        knowledge_body = load_text_documents(path=training_data_path,
+#                                             pattern=pattern,
+#                                             multithread=multithread)
+#        print(f"Loaded {len(knowledge_body)} Documents...")
+#
+#        # prepare knowledge corpus
+#        corpus_data = prepare_corpus(knowledge_body)
+#        print(f"Prepared {len(corpus_data)} data sources...")
+#
+#        tokenized_docs = splitter(documents=corpus_data,
+#                                  chunk_size=chunk_size,
+#                                  chunk_overlap=chunk_overlap)
+#        print(f"Tokenized documents number: {len(tokenized_docs)}.")
+#
+#        if len(tokenized_docs) > 0:
+#            for doc in tqdm(tokenized_docs, ascii=True, desc="Ingesting..."):
+#                self.Adapter().add_documents(ids=[str(uuid.uuid1())], documents=[doc])
+#
     def GenerateEmbeddings(self, training_data_path: str = ".",
                            pattern: str = "**/*.txt",
-                           chunk_size: int = 1000, chunk_overlap: int = 0,
+                           separator: str = "\n\n",
+                           language: str = "english",
                            multithread: bool = False):
         # load custom knowledge data and tokenize it
         knowledge_body = load_text_documents(path=training_data_path,
@@ -45,12 +71,12 @@ class RemoteChromaClient(object):
         print(f"Loaded {len(knowledge_body)} Documents...")
 
         # prepare knowledge corpus
-        tokenized_data = prepare_corpus(knowledge_body)
-        print(f"Tokenized {len(tokenized_data)} Content...")
+        corpus_data = prepare_corpus(knowledge_body)
+        print(f"Prepared {len(corpus_data)} data sources...")
 
-        tokenized_docs = split_text_documents(documents=tokenized_data,
-                                              chunk_size=chunk_size,
-                                              chunk_overlap=chunk_overlap)
+        tokenized_docs = splitter(documents=corpus_data,
+                                  separator=separator,
+                                  language=language)
         print(f"Tokenized documents number: {len(tokenized_docs)}.")
 
         if len(tokenized_docs) > 0:

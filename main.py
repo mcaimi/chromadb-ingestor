@@ -56,7 +56,10 @@ if __name__ == "__main__":
                                     collection_similarity=parms.chromadb.collection_similarity,
                                     embedding_function=embed_func)
             ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
-            cc.GenerateEmbeddings(training_data_path=parms.training_data.path, pattern=parms.training_data.pattern, chunk_size=parms.training_data.chunk_size, chunk_overlap=parms.training_data.chunk_overlap)
+            cc.GenerateEmbeddings(training_data_path=parms.training_data.path, 
+                                  pattern=parms.training_data.pattern,
+                                  separator=parms.training_data.separator,
+                                  language=parms.training_data.language)
             ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
         except Exception as e:
             ttyWriter.print_error(f"{e}")
@@ -70,8 +73,10 @@ if __name__ == "__main__":
             cc = ChromaClient(persistence_directory=parms.chromadb.persist_dir,
                               embedding_function=embed_func)
             ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
-            cc.TokenizeDocs(training_data_path=parms.training_data.path, pattern=parms.training_data.pattern, chunk_size=parms.training_data.chunk_size, chunk_overlap=parms.training_data.chunk_overlap)
-            cc.GenerateEmbeddings()
+            cc.GenerateEmbeddings(training_data_path=parms.training_data.path,
+                                  pattern=parms.training_data.pattern,
+                                  separator=parms.training_data.separator,
+                                  language=parms.training_data.language)
             ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
         except Exception as e:
             ttyWriter.print_error(f"{e}")

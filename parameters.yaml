@@ -12,6 +12,8 @@ training_data:
   pattern: "**/*.txt"
   chunk_size: 1000
   chunk_overlap: 0
+  separator: "\n\n"
+  language: "english"
 
 embeddings:
   local: True
