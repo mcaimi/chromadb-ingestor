@@ -5,7 +5,8 @@ from tqdm import tqdm
 from typing import Callable
 from langchain_chroma import Chroma
 from chromadb import PersistentClient, Collection
-from .loaders.textdata import (load_text_documents, prepare_corpus)
+from .loaders.dataloader import prepare_corpus
+from .loaders.formats import loaders
 from .splitters.splitters import split_text_documents_nltk as splitter
 
 
@@ -34,12 +35,13 @@ class ChromaClient(object):
 
     def GenerateEmbeddings(self,
                            training_data_path: str = ".",
+                           data_type: str = "text",
                            pattern: str = "**/*.txt",
                            separator: str = '\n\n',
                            language: str = 'english',
                            multithread: bool = False) -> None:
-        self.documents: list = load_text_documents(path=training_data_path,
-                                                   pattern=pattern, multithread=multithread)
+        self.documents: list = loaders[data_type](path=training_data_path,
+                                                  pattern=pattern, multithread=multithread)
         print(f"Loaded {len(self.documents)} Documents...")
         knowledge_body = prepare_corpus(self.documents)
 
@@ -54,6 +56,9 @@ class ChromaClient(object):
         if len(self.tokenized_documents) > 0:
             for doc in tqdm(self.tokenized_documents, ascii=True, desc="Ingesting..."):
                 self.chroma_adapter.add_documents(ids=[str(uuid.uuid1())], documents=[doc])
+
+        # cleanup
+        del self.documents
 
 #    TO BE REMOVED
 #    def GenerateEmbeddings(self,

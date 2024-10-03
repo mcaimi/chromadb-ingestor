@@ -2,7 +2,6 @@
 
 try:
     from langchain_core.documents import Document
-    from langchain_community.document_loaders import DirectoryLoader, TextLoader
     from nltk import word_tokenize, sent_tokenize, download
     from prettytable import PrettyTable
     from tqdm import tqdm
@@ -12,31 +11,21 @@ except Exception as e:
     print(f"Caught Exception {e}")
 
 
-def load_text_documents(path: str = ".", pattern: str = "**/*.txt",
-                        multithread: bool = False) -> list:
-    loader = DirectoryLoader(path,
-                             glob=pattern,
-                             loader_cls=TextLoader,
-                             loader_kwargs={'autodetect_encoding': True},
-                             use_multithreading=multithread,
-                             silent_errors=True,
-                             show_progress=True)
-    return loader.load()
-
-
+# Prepare data corpus, load from training data set
 def prepare_corpus(raw_loader: list) -> list:
     # collect statistics in relation to the data corpus
     corpus = []
     for doc in raw_loader:
         document_tokens = word_tokenize(doc.page_content)
         document_sentences = sent_tokenize(doc.page_content)
-        corpus.append({"metadata": doc.metadata,
-                       "raw_sentences": document_sentences,
-                       "page_content": doc.page_content,
-                       "sentence_count": len(document_sentences),
-                       "wordcount": len(document_tokens),
-                       "vocabulary": set(document_tokens),
-                       "lexical_richness": len(set(document_tokens)) / len(document_tokens)})
+        if (len(document_tokens) != 0) and (len(document_sentences) != 0):
+            corpus.append({"metadata": doc.metadata,
+                           "raw_sentences": document_sentences,
+                           "page_content": doc.page_content,
+                           "sentence_count": len(document_sentences),
+                           "wordcount": len(document_tokens),
+                           "vocabulary": set(document_tokens),
+                           "lexical_richness": len(set(document_tokens)) / len(document_tokens)})
 
     # display corpus
     data_table = PrettyTable()

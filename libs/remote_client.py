@@ -5,7 +5,8 @@ from typing import Callable
 from tqdm import tqdm
 from langchain_chroma import Chroma
 from chromadb import HttpClient, Collection
-from .loaders.textdata import (load_text_documents, prepare_corpus)
+from .loaders.dataloader import prepare_corpus
+from .loaders.formats import loaders
 from .splitters.splitters import split_text_documents_nltk as splitter
 from .vectorstore.remote import chroma_client
 
@@ -60,14 +61,15 @@ class RemoteChromaClient(object):
 #                self.Adapter().add_documents(ids=[str(uuid.uuid1())], documents=[doc])
 #
     def GenerateEmbeddings(self, training_data_path: str = ".",
+                           data_type: str = "text",
                            pattern: str = "**/*.txt",
                            separator: str = "\n\n",
                            language: str = "english",
                            multithread: bool = False):
         # load custom knowledge data and tokenize it
-        knowledge_body = load_text_documents(path=training_data_path,
-                                             pattern=pattern,
-                                             multithread=multithread)
+        knowledge_body = loaders[type](path=training_data_path,
+                                       pattern=pattern,
+                                       multithread=multithread)
         print(f"Loaded {len(knowledge_body)} Documents...")
 
         # prepare knowledge corpus

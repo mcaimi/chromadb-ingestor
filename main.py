@@ -56,10 +56,12 @@ if __name__ == "__main__":
                                     collection_similarity=parms.chromadb.collection_similarity,
                                     embedding_function=embed_func)
             ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
-            cc.GenerateEmbeddings(training_data_path=parms.training_data.path, 
-                                  pattern=parms.training_data.pattern,
-                                  separator=parms.training_data.separator,
-                                  language=parms.training_data.language)
+            for src in parms.training_data.sources:
+                cc.GenerateEmbeddings(training_data_path=src.get("path"),
+                                      data_type=src.get("data_type"),
+                                      pattern=src.get("pattern"),
+                                      separator=parms.training_data.separator,
+                                      language=parms.training_data.language)
             ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
         except Exception as e:
             ttyWriter.print_error(f"{e}")
@@ -73,10 +75,13 @@ if __name__ == "__main__":
             cc = ChromaClient(persistence_directory=parms.chromadb.persist_dir,
                               embedding_function=embed_func)
             ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
-            cc.GenerateEmbeddings(training_data_path=parms.training_data.path,
-                                  pattern=parms.training_data.pattern,
-                                  separator=parms.training_data.separator,
-                                  language=parms.training_data.language)
+            for src in parms.training_data.sources:
+                print(f"Ingesting data type {src.get("data_type")}")
+                cc.GenerateEmbeddings(training_data_path=src.get("path"),
+                                      data_type=src.get("data_type"),
+                                      pattern=src.get("pattern"),
+                                      separator=parms.training_data.separator,
+                                      language=parms.training_data.language)
             ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
         except Exception as e:
             ttyWriter.print_error(f"{e}")

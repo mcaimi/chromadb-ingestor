@@ -8,8 +8,13 @@ chromadb:
   collection_similarity: "cosine"
 
 training_data:
-  path: "/training_data"
-  pattern: "**/*.txt"
+  sources:
+    - data_type: "text"
+      path: "/training_data"
+      pattern: "**/*.txt"
+    - data_type: "pdf"
+      path: "/training_data"
+      pattern: "**/*.pdf"
   chunk_size: 1000
   chunk_overlap: 0
   separator: "\n\n"
