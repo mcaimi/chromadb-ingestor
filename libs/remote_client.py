@@ -67,7 +67,7 @@ class RemoteChromaClient(object):
                            language: str = "english",
                            multithread: bool = False):
         # load custom knowledge data and tokenize it
-        knowledge_body = loaders[type](path=training_data_path,
+        knowledge_body = loaders[data_type](path=training_data_path,
                                        pattern=pattern,
                                        multithread=multithread)
         print(f"Loaded {len(knowledge_body)} Documents...")
