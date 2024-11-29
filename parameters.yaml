@@ -22,8 +22,13 @@ training_data:
 
 embeddings:
   local: True
+  remote_service: "ollama"
   sentence_transformer:
     model: "all-MiniLM-L6-v2"
   ollama:
     baseurl: "http://localhost:11434"
     model: "nomic-embed-text:latest"
+  openai:
+    baseurl: "http://localhost:11434"
+    model: "nomic-embed-text:latest"
+    apikey: "your_api_key"

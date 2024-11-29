@@ -39,10 +39,19 @@ if __name__ == "__main__":
         from libs.embedding.sentencetransformer import s_transformer
         embed_func = s_transformer(model=parms.embeddings.sentence_transformer.model)
     else:
-        ttyWriter.print_warning(f"Running Ollama embedding with model {parms.embeddings.ollama.model}")
-        ttyWriter.print_warning(f"Ollama API URL: {parms.embeddings.ollama.baseurl}")
-        from libs.embedding.ollama import ollama_instance
-        embed_func = ollama_instance(base_url=parms.embeddings.ollama.baseurl, model=parms.embeddings.ollama.model)
+        if parms.embeddings.remote_service == "ollama":
+            ttyWriter.print_warning(f"Running Ollama embedding with model {parms.embeddings.ollama.model}")
+            ttyWriter.print_warning(f"Ollama API URL: {parms.embeddings.ollama.baseurl}")
+            from libs.embedding.ollama import ollama_instance
+            embed_func = ollama_instance(base_url=parms.embeddings.ollama.baseurl, model=parms.embeddings.ollama.model)
+        elif parms.embeddings.remote_service == "openai":
+            ttyWriter.print_warning(f"Running OpenAI-Compatible embedding with model {parms.embeddings.openai.model}")
+            ttyWriter.print_warning(f"OpenAI API URL: {parms.embeddings.openai.baseurl} - APIKEY: {parms.embeddings.openai.apikey}")
+            from libs.embedding.openai import openai_instance
+            embed_func = openai_instance(base_url=parms.embeddings.openai.baseurl, model=parms.embeddings.openai.model, api_key=parms.embeddings.openai.apikey)
+        else:
+            ttyWriter.print_error(f"Unsupported Remote Service Type: {parms.embeddings.remote_service}. Aborting.")
+            exit(-1)
 
     if parms.chromadb.remote:
         ttyWriter.print_success("Chroma Ingestor: Initializing Remote Client")

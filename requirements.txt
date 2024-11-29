@@ -5,6 +5,7 @@ langchain
 langchain-huggingface
 langchain-chroma
 langchain-ollama
+langchain-openai
 langchain_community
 tqdm
 prettytable
