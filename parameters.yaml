@@ -7,6 +7,8 @@ chromadb:
   collection: "default"
   collection_similarity: "cosine"
 
+backend: "langchain" # or llamaindex
+
 training_data:
   sources:
     - data_type: "text"
@@ -19,6 +21,14 @@ training_data:
   chunk_overlap: 0
   separator: "\n\n"
   language: "english"
+
+llamaindex:
+  data_path: "/data_path"
+  extensions:
+    - ".txt"
+    - ".pdf"
+  show_progress: True
+  recursive: True
 
 embeddings:
   local: True
