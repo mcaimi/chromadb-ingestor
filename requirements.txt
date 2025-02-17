@@ -1,5 +1,5 @@
 chardet
-chromadb==0.5.20
+chromadb==0.6.3
 sentence_transformers
 langchain
 langchain-huggingface
@@ -11,3 +11,7 @@ tqdm
 prettytable
 nltk
 pypdf
+llama-index
+llama-index-core
+llama-index-vector-stores-chroma
+llama-index-embeddings-langchain
