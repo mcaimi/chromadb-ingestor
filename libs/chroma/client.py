@@ -5,9 +5,9 @@ from tqdm import tqdm
 from typing import Callable
 from langchain_chroma import Chroma
 from chromadb import PersistentClient, Collection
-from .loaders.dataloader import prepare_corpus
-from .loaders.formats import loaders
-from .splitters.splitters import split_text_documents_nltk as splitter
+from libs.loaders.dataloader import prepare_corpus
+from libs.loaders.formats import loaders
+from libs.splitters.splitters import split_text_documents_nltk as splitter
 
 
 class ChromaClient(object):
@@ -60,26 +60,3 @@ class ChromaClient(object):
         # cleanup
         del self.documents
 
-#    TO BE REMOVED
-#    def GenerateEmbeddings(self,
-#                           training_data_path: str = ".",
-#                           pattern: str = "**/*.txt",
-#                           chunk_size: int = 1000,
-#                           chunk_overlap: int = 0,
-#                           multithread: bool = False) -> None:
-#        self.documents: list = load_text_documents(path=training_data_path,
-#                                                   pattern=pattern, multithread=multithread)
-#        print(f"Loaded {len(self.documents)} Documents...")
-#        knowledge_body = prepare_corpus(self.documents)
-#
-#        # tokenize
-#        self.tokenized_documents: list = splitter(documents=knowledge_body,
-#                                                  chunk_size=chunk_size,
-#                                                  chunk_overlap=chunk_overlap)
-#        print(f"Tokenized documents number: {len(self.tokenized_documents)}.")
-#        del (knowledge_body)
-#
-#        # ingest documents
-#        if len(self.tokenized_documents) > 0:
-#            for doc in tqdm(self.tokenized_documents, ascii=True, desc="Ingesting..."):
-#                self.chroma_adapter.add_documents(ids=[str(uuid.uuid1())], documents=[doc])

@@ -57,7 +57,7 @@ if __name__ == "__main__":
         ttyWriter.print_success("Chroma Ingestor: Initializing Remote Client")
         ttyWriter.print_warning(f"Chroma Host: {parms.chromadb.host} - Chroma Port: {parms.chromadb.port}")
 
-        from libs.remote_client import RemoteChromaClient
+        from libs.chroma.remote_client import RemoteChromaClient
         try:
             cc = RemoteChromaClient(host=parms.chromadb.host,
                                     port=int(parms.chromadb.port),
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         ttyWriter.print_success("Chroma Ingestor: Initializing Local Client")
         ttyWriter.print_warning(f"Chroma persistence dir: {parms.chromadb.persist_dir}")
 
-        from libs.client import ChromaClient
+        from libs.chroma.client import ChromaClient
         try:
             cc = ChromaClient(persistence_directory=parms.chromadb.persist_dir,
                               embedding_function=embed_func)
