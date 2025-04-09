@@ -7,8 +7,6 @@ chromadb:
   collection: "default"
   collection_similarity: "cosine"
 
-backend: "langchain" # or llamaindex
-
 training_data:
   sources:
     - data_type: "text"

@@ -56,84 +56,38 @@ if __name__ == "__main__":
     if parms.chromadb.remote:
         ttyWriter.print_success("Chroma Ingestor: Initializing Remote Client")
         ttyWriter.print_warning(f"Chroma Host: {parms.chromadb.host} - Chroma Port: {parms.chromadb.port}")
+        from libs.embedding.llamaindex import LlamaIndexEmbedding
+        from libs.chroma.remote_client import LlamaIndexChromaRemote
 
-        if parms.backend == "langchain":
-            ttyWriter.print_warning(f"Backend Selected: {parms.backend}")
-            from libs.chroma.remote_client import RemoteChromaClient
-            try:
-                cc = RemoteChromaClient(host=parms.chromadb.host,
+        try:
+            llama_embed_model = LlamaIndexEmbedding(embed_func)
+            cc = LlamaIndexChromaRemote(host=parms.chromadb.host,
                                         port=int(parms.chromadb.port),
                                         collection=parms.chromadb.collection,
                                         collection_similarity=parms.chromadb.collection_similarity,
-                                        embedding_function=embed_func)
-                ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
-                for src in parms.training_data.sources:
-                    cc.GenerateEmbeddings(training_data_path=src.get("path"),
-                                          data_type=src.get("data_type"),
-                                          pattern=src.get("pattern"),
-                                          separator=parms.training_data.separator,
-                                          language=parms.training_data.language)
-                ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
-            except Exception as e:
-                ttyWriter.print_error(f"{e}")
-        elif parms.backend == "llamaindex":
-            ttyWriter.print_warning(f"Backend Selected: {parms.backend}")
-            from libs.embedding.llamaindex import LlamaIndexEmbedding
-            from libs.chroma.remote_client import LlamaIndexChromaRemote
-            try:
-                llama_embed_model = LlamaIndexEmbedding(embed_func)
-                cc = LlamaIndexChromaRemote(host=parms.chromadb.host,
-                                            port=int(parms.chromadb.port),
-                                            collection=parms.chromadb.collection,
-                                            collection_similarity=parms.chromadb.collection_similarity,
-                                            embedding_function=llama_embed_model)
-                ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
-                cc.GenerateEmbeddings(training_data_path=parms.llamaindex.data_path,
-                                      pattern=parms.llamaindex.extensions,
-                                      show_progress=True)
-            except Exception as e:
-                ttyWriter.print_error(f"{e}")
-        else:
-            ttyWriter.print_error(f"Backend {parms.backend} is not supported.")
-
+                                        embedding_function=llama_embed_model)
+            ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
+            cc.GenerateEmbeddings(training_data_path=parms.llamaindex.data_path,
+                                  pattern=parms.llamaindex.extensions,
+                                  show_progress=True)
+        except Exception as e:
+            ttyWriter.print_error(f"{e}")
     else:
-        if parms.backend == "langchain":
-            ttyWriter.print_success("Chroma Ingestor: Initializing Local Client")
-            ttyWriter.print_warning(f"[{parms.backend}] Chroma persistence dir: {parms.chromadb.persist_dir}")
+        ttyWriter.print_success("Chroma Ingestor: Initializing Local Client")
+        ttyWriter.print_warning(f"[{parms.backend}] Chroma persistence dir: {parms.chromadb.persist_dir}")
 
-            from libs.chroma.client import ChromaClient
-            try:
-                cc = ChromaClient(persistence_directory=parms.chromadb.persist_dir,
-                                  embedding_function=embed_func)
-                ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
-                for src in parms.training_data.sources:
-                    print(f"Ingesting data type {src.get('data_type')}")
-                    cc.GenerateEmbeddings(training_data_path=src.get("path"),
-                                          data_type=src.get("data_type"),
-                                          pattern=src.get("pattern"),
-                                          separator=parms.training_data.separator,
-                                          language=parms.training_data.language)
-                ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
-            except Exception as e:
-                ttyWriter.print_error(f"{e}")
-        elif parms.backend == "llamaindex":
-            ttyWriter.print_success("Chroma Ingestor: Initializing Local Client")
-            ttyWriter.print_warning(f"[{parms.backend}] Chroma persistence dir: {parms.chromadb.persist_dir}")
-
-            from libs.chroma.client import LlamaIndexChroma
-            from libs.embedding.llamaindex import LlamaIndexEmbedding
-            try:
-                llama_embed_model = LlamaIndexEmbedding(embed_func)
-                cc = LlamaIndexChroma(persistence_directory=parms.chromadb.persist_dir,
-                                      collection=parms.chromadb.collection,
-                                      collection_similarity=parms.chromadb.collection_similarity,
-                                      embedding_function=llama_embed_model)
-                ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
-                cc.GenerateEmbeddings(training_data_path=parms.llamaindex.data_path,
-                                      pattern=parms.llamaindex.extensions,
-                                      show_progress=True)
-                ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
-            except Exception as e:
-                ttyWriter.print_error(f"{e}")
-        else:
-            ttyWriter.print_error(f"Backend {parms.backend} is not supported.")
+        from libs.chroma.client import LlamaIndexChroma
+        from libs.embedding.llamaindex import LlamaIndexEmbedding
+        try:
+            llama_embed_model = LlamaIndexEmbedding(embed_func)
+            cc = LlamaIndexChroma(persistence_directory=parms.chromadb.persist_dir,
+                                  collection=parms.chromadb.collection,
+                                  collection_similarity=parms.chromadb.collection_similarity,
+                                  embedding_function=llama_embed_model)
+            ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
+            cc.GenerateEmbeddings(training_data_path=parms.llamaindex.data_path,
+                                  pattern=parms.llamaindex.extensions,
+                                  show_progress=True)
+            ttyWriter.print_warning(f"Objects in collection after ingestion: {cc.Collection().count()}")
+        except Exception as e:
+            ttyWriter.print_error(f"{e}")
