@@ -1,9 +1,8 @@
 chardet
-chromadb==0.6.3
+chromadb==1.0.3
 sentence_transformers
 langchain
 langchain-huggingface
-langchain-chroma
 langchain-ollama
 langchain-openai
 langchain_community
