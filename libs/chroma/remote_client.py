@@ -46,7 +46,6 @@ class LlamaIndexChromaRemote(object):
 
         if len(knowledge_body) > 0:
             for doc in knowledge_body:
-                print(f"Ingesting {doc}...")
                 self._vector_index = VectorStoreIndex.from_documents([doc],
                                                                      storage_context=self._storage_context,
                                                                      embed_model=self._embed_function,
