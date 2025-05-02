@@ -39,10 +39,11 @@ class LlamaIndexChroma(object):
         print(f"Loaded {len(knowledge_body)} Documents...")
 
         if len(knowledge_body) > 0:
-            self._vector_index = VectorStoreIndex.from_documents(knowledge_body,
-                                                                 storage_context=self._storage_context,
-                                                                 embed_model=self._embed_function,
-                                                                 show_progress=show_progress)
+            for doc in knowledge_body:
+                self._vector_index = VectorStoreIndex.from_documents([doc],
+                                                                     storage_context=self._storage_context,
+                                                                     embed_model=self._embed_function,
+                                                                     show_progress=show_progress)
 
     def __str__(self) -> str:
         return f"ChromaDB Client: {self._client.database} - Collection: {self._collection}"
