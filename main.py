@@ -69,7 +69,7 @@ if __name__ == "__main__":
             ttyWriter.print_warning(f"Objects in collection: {cc.Collection().count()}")
             cc.GenerateEmbeddings(training_data_path=parms.llamaindex.data_path,
                                   pattern=parms.llamaindex.extensions,
-                                  show_progress=True)
+                                  show_progress=True, batches=parms.training_data.batches)
         except Exception as e:
             ttyWriter.print_error(f"{e}")
     else:
