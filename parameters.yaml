@@ -19,6 +19,7 @@ training_data:
   chunk_overlap: 0
   separator: "\n\n"
   language: "english"
+  batches: 1
 
 llamaindex:
   data_path: "/data_path"
