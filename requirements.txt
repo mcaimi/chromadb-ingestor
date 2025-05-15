@@ -1,5 +1,5 @@
 chardet
-chromadb==1.0.7
+chromadb==1.0.9
 sentence_transformers
 langchain
 langchain-huggingface
